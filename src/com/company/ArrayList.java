@@ -169,35 +169,6 @@ public class ArrayList<T> {
     }
 }
 
-class Main
-{
-    public static void main ( String [] arguments )
-    {
-        ArrayList<Integer> al = new ArrayList<>();
-        /*al.addToBack(0);
-        al.addToBack(1);
-        al.addToBack(2);
-        al.addToBack(3);
-        al.addToBack(4);
-        al.addToBack(5);
-        al.addToBack(6);
-        al.addToBack(7);
-        al.addToBack(8);
-        al.addToBack(9);*/
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-        System.out.println(al.removeFromBack());
-
-    }
-}
 
 /*
 [Test Failure: removeFromBack] [-0.43] : NoSuchElementException not thrown when attempting to remove from the back of an empty ArrayList.
