@@ -1,4 +1,4 @@
-package com.company;
+package com.GTx_CS1332xI;
 
 /**
  * Node class used for implementing the SinglyLinkedList.
