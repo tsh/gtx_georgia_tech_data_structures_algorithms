@@ -46,10 +46,10 @@ public class BST<T extends Comparable<? super T>> {
         if (current == null){
             return new BSTNode<T>(data);
         }
-        if (current.getData().compareTo(data) > 0){
+        if (current.getData().compareTo(data) < 0){
             current.setRight(_add(current.getRight(), data));
         }
-        if (current.getData().compareTo(data) < 0){
+        if (current.getData().compareTo(data) > 0){
             current.setLeft(_add(current.getLeft(), data));
         }
         return current;
@@ -87,49 +87,62 @@ public class BST<T extends Comparable<? super T>> {
             throw new IllegalArgumentException();
         }
         BSTNode<T> returnNode = new BSTNode<T>(null);
-        BSTNode<T> node = _remove(root, data, returnNode);
+        root = _remove(root, data, returnNode);
         size --;
         return returnNode.getData();
     }
 
     private BSTNode<T> _remove(BSTNode<T> current, T data, BSTNode<T> returnNode){
         if (current.getData() == null){
-            return current;
+            throw new NoSuchElementException();
         }
 
         if (current.getData().compareTo(data) == 0){
             // Remove
-            returnNode = current;
             BSTNode<T> leftChild = current.getLeft();
             BSTNode<T> rightChild = current.getRight();
+            returnNode.setData(current.getData());
 
-            if (leftChild.getData() == null && rightChild.getData() == null){
+
+            if (leftChild == null && rightChild == null){
                 return null;
             }
-            if (leftChild.getData() == null && rightChild.getData() != null){
+            if (leftChild == null && rightChild != null){
                 return rightChild;
             }
-            if (leftChild.getData() != null && rightChild.getData() == null){
+            if (leftChild != null && rightChild == null){
                 return leftChild;
             }
-            if (leftChild.getData() != null && rightChild.getData() != null){
+            if (leftChild != null && rightChild != null){
                 BSTNode<T> dummy = new BSTNode<T>(null);
-                return successor(current, dummy);
+                current.setRight(successor(current.getRight(), dummy));
+                current.setData(dummy.getData());
+                return current;
             }
         }
         // Search
-        if (current.getData().compareTo(data) > 0){
-            return _remove(current.getRight(), data, returnNode);
-        }
         if (current.getData().compareTo(data) < 0){
-            return _remove(current.getLeft(), data, returnNode);
+            BSTNode<T> right = _remove(current.getRight(), data, returnNode);
+            current.setRight(right);
+            return right;
+        }
+        if (current.getData().compareTo(data) > 0){
+            BSTNode<T> left = _remove(current.getLeft(), data, returnNode);
+            current.setLeft(left);
+            return left;
         }
         return current;
     };
 
     private BSTNode<T> successor(BSTNode<T> current, BSTNode<T> dummy){
-        return dummy;
-    }
+        if (current.getLeft() == null){
+            dummy.setData(current.getData());
+            return current.getRight();
+        }
+        BSTNode<T> left = successor(current.getLeft(), dummy);
+        current.setLeft(left);
+        return current;
+    };
 
     /**
      * Returns the root of the tree.
