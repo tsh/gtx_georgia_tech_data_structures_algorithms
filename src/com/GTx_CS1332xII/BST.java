@@ -39,11 +39,11 @@ public class BST<T extends Comparable<? super T>> {
             throw new IllegalArgumentException();
         }
         root = _add(root, data);
-        size++;
     }
 
     private BSTNode<T> _add (BSTNode<T> current, T data){
         if (current == null){
+            size++;
             return new BSTNode<T>(data);
         }
         if (current.getData().compareTo(data) < 0){
@@ -93,7 +93,7 @@ public class BST<T extends Comparable<? super T>> {
     }
 
     private BSTNode<T> _remove(BSTNode<T> current, T data, BSTNode<T> returnNode){
-        if (current.getData() == null){
+        if (current == null){
             throw new NoSuchElementException();
         }
 
@@ -124,12 +124,12 @@ public class BST<T extends Comparable<? super T>> {
         if (current.getData().compareTo(data) < 0){
             BSTNode<T> right = _remove(current.getRight(), data, returnNode);
             current.setRight(right);
-            return right;
+            return current;
         }
         if (current.getData().compareTo(data) > 0){
             BSTNode<T> left = _remove(current.getLeft(), data, returnNode);
             current.setLeft(left);
-            return left;
+            return current;
         }
         return current;
     };
