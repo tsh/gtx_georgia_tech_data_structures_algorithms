@@ -92,10 +92,9 @@ public class MinHeap<T extends Comparable<? super T>> {
         // downheap
         int i = 1;
 
-        while (true){
+        while (i < size){
             int leftChildIndex = i*2;
             int rightChildIndex = i*2+1;
-            if (rightChildIndex > size) {break;}
             if (backingArray[leftChildIndex] == null && backingArray[rightChildIndex] != null){
                 swap(rightChildIndex, i);
                 i = rightChildIndex;
@@ -153,4 +152,3 @@ public class MinHeap<T extends Comparable<? super T>> {
         return size;
     }
 }
-
