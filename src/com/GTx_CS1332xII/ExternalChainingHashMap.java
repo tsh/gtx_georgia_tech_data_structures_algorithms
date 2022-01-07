@@ -72,7 +72,7 @@ public class ExternalChainingHashMap<K, V> {
      * @throws java.lang.IllegalArgumentException If key or value is null.
      */
     public V put(K key, V value) {
-        if (key == null){
+        if (key == null || value == null){
             throw new IllegalArgumentException();
         }
 
@@ -237,3 +237,271 @@ public class ExternalChainingHashMap<K, V> {
         return size;
     }
 }
+
+/*
+[Executed at: Fri Jan 7 8:32:42 PST 2022]
+
+============================================================
+ExternalChainingHashMap.java successfully compiled.
+============================================================
+Tests Passed: 12 / 25
+[Test Failure: remove] [-0.4] : Unexpected content after attempting to remove element not in the HashMap.
+
+Before : [
+    null,
+    (1, 1) -> (14, 14),
+    null,
+    null,
+    (30, 30),
+    null,
+    (6, 6),
+    null,
+    (8, 8),
+    null,
+    null,
+    (11, 11),
+    null
+]
+
+Expected : [
+    null,
+    (1, 1) -> (14, 14),
+    null,
+    null,
+    (30, 30),
+    null,
+    (6, 6),
+    null,
+    (8, 8),
+    null,
+    null,
+    (11, 11),
+    null
+]
+
+Actual : [
+    null,
+    (1, 1),
+    null,
+    null,
+    (30, 30),
+    null,
+    (6, 6),
+    null,
+    (8, 8),
+    null,
+    null,
+    (11, 11),
+    null
+]
+
+[Test Failure: remove] [-0.4] : Unexpected content after removing key = 4 from the HashMap.
+
+Before : [
+    null,
+    null,
+    null,
+    null,
+    (4, 4),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+Expected : [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+Actual : [
+    null,
+    null,
+    null,
+    null,
+    (4, 4),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.lang.ArrayIndexOutOfBoundsException: Index -11 out of bounds for length 13
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.remove, line number: 132
+
+[Test Failure: remove] [-0.4] : Unexpected content after removing key = 11 from the HashMap.
+
+Before : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    (6, 6),
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (24, 24) -> (37, 37),
+    null
+]
+
+Expected : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    (6, 6),
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (24, 24) -> (37, 37),
+    null
+]
+
+Actual : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    (6, 6),
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (24, 24) -> (37, 37),
+    null
+]
+
+[Test Failure: remove] [-0.4] : Unexpected content after removing key = 37 from the HashMap.
+
+Before : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    null,
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (24, 24) -> (37, 37) -> (50, 50),
+    null
+]
+
+Expected : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    null,
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (24, 24) -> (50, 50),
+    null
+]
+
+Actual : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    null,
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (50, 50),
+    null
+]
+
+[Test Failure: remove] [-0.4] : Unexpected content after removing key = 37 from the HashMap.
+
+Before : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    (6, 6),
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (24, 24) -> (37, 37),
+    null
+]
+
+Expected : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    (6, 6),
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11) -> (24, 24),
+    null
+]
+
+Actual : [
+    null,
+    (1, 1),
+    null,
+    null,
+    null,
+    null,
+    (6, 6),
+    (19, 19),
+    (8, 8),
+    null,
+    null,
+    (11, 11),
+    null
+]
+
+[Test Failure: validSize] [-0.4] : Size variable could not be validated for the following method(s) due to early test failure(s): remove, put.
+
+[Test Failure: validData] [-0.4] : Returned data could not be validated for the following method(s) due to early test failure(s): put, remove.
+
+[Test Failure: equals] [-0.4] : equals() was not used correctly when testing the following method(s): put. Correct equals() usage could not be validated for the following method(s) due to early test failure(s): remove.
+ */
