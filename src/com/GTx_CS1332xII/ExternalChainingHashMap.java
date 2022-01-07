@@ -84,6 +84,7 @@ public class ExternalChainingHashMap<K, V> {
             ExternalChainingMapEntry<K,V> kv = new ExternalChainingMapEntry<K,V>(key, value);
             table[compression] = kv;
             ret = null;
+            size++;
         } else {
             ExternalChainingMapEntry<K, V> kv = table[compression];
             ret = addToChain(kv, key, value);
@@ -105,6 +106,7 @@ public class ExternalChainingHashMap<K, V> {
         }
         ExternalChainingMapEntry<K,V> newKV = new ExternalChainingMapEntry<K,V> (key, value);
         newKV.setNext(kv);
+        size++;
         return value;
     }
 
@@ -121,35 +123,47 @@ public class ExternalChainingHashMap<K, V> {
             throw new IllegalArgumentException();
         }
 
-        V returnValue = null;
-        for (ExternalChainingMapEntry<K, V> cur : table) {
-            if (cur == null) {
-                continue;
-            }
-            returnValue = findAndRemove(cur, key);
-            if (returnValue != null){
-                return returnValue;
-            }
+        Integer cellNumber = key.hashCode() % table.length;
+        ExternalChainingMapEntry<K,V> cur = table[cellNumber];
+        if (cur == null) {
+            throw new NoSuchElementException();
+        }
+        V returnValue = findAndRemove(cur, key);
+        if (returnValue != null){
+            size--;
+            return returnValue;
         }
         throw new NoSuchElementException();
     }
 
     private V findAndRemove(ExternalChainingMapEntry<K,V> chain, K key){
-        V retValue = null;
-        recurFindAndRemove(chain, key, retValue);
-        return retValue;
+        Tupple t = recurFindAndRemove(chain, key);
+        return t.returnValue;
     }
 
-    private ExternalChainingMapEntry<K,V> recurFindAndRemove (ExternalChainingMapEntry<K,V> chain, K key, V retValue){
+    private Tupple recurFindAndRemove (ExternalChainingMapEntry<K,V> chain, K key){
+        Tupple t = new Tupple(null, null);
         if (chain == null){
-            return null;
+            return t;
         }
         if (chain.getKey() == key){
-            retValue = chain.getValue();
-            return chain.getNext();
+            t.chainElement = chain.getNext();
+            t.returnValue = chain.getValue();
         } else {
-            chain.setNext(recurFindAndRemove(chain.getNext(), key, retValue));
-            return chain;
+            t = recurFindAndRemove(chain.getNext(), key);
+            chain.setNext(t.chainElement);
+        }
+        return t;
+    }
+
+    class Tupple {
+        /* class to return multiple arguments from a function */
+        ExternalChainingMapEntry<K,V> chainElement;
+        V returnValue;
+
+        public Tupple(ExternalChainingMapEntry<K,V> chainElement_, V returnValue_){
+               chainElement = chainElement_;
+               returnValue = returnValue_;
         }
     }
 
@@ -218,3 +232,308 @@ public class ExternalChainingHashMap<K, V> {
         return size;
     }
 }
+
+/*
+[Executed at: Thu Jan 6 9:15:04 PST 2022]
+
+============================================================
+ExternalChainingHashMap.java successfully compiled.
+============================================================
+Tests Passed: 10 / 25
+
+[Test Failure: put] [-0.4] : IllegalArgumentException not thrown when attempting to add null key and value.
+
+[Test Failure: put] [-0.4] : This put test was inconclusive due to: java.lang.ArrayIndexOutOfBoundsException: Index -10 out of bounds for length 13
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.put, line number: 81
+
+[Test Failure: put] [-0.4] : This put test was inconclusive due to: org.junit.runners.model.TestTimedOutException: test timed out after 1000 milliseconds
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.addToChain, line number: 103
+	at ExternalChainingHashMap.put, line number: 88
+
+[Test Failure: put] [-0.4] : This put test was inconclusive due to: org.junit.runners.model.TestTimedOutException: test timed out after 1000 milliseconds
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.addToChain, line number: 103
+	at ExternalChainingHashMap.put, line number: 88
+
+[Test Failure: put] [-0.4] : Unexpected content after putting (8, 8) into the HashMap.
+
+Before : [
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+Expected : [
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+Actual : [
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    null,
+    null,
+    null,
+    null
+]
+
+[Test Failure: put] [-0.4] : Unexpected content after putting (1, 1) into the HashMap.
+
+Before : [
+    (13, 13),
+    (53, 53),
+    (15, 15),
+    (3, 3),
+    (17, 17),
+    (5, 5),
+    (19, 19),
+    null,
+    null,
+    null,
+    (218, 218),
+    null,
+    null
+]
+
+Expected : [
+    null,
+    (1, 1),
+    (218, 218),
+    (3, 3),
+    null,
+    (5, 5),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    (13, 13),
+    null,
+    (15, 15),
+    null,
+    (17, 17),
+    null,
+    (19, 19),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    (53, 53)
+]
+
+Actual : [
+    (13, 13),
+    (53, 53),
+    (15, 15),
+    (3, 3),
+    (17, 17),
+    (5, 5),
+    (19, 19),
+    null,
+    null,
+    null,
+    (218, 218),
+    null,
+    null
+]
+
+[Test Failure: put] [-0.4] : Unexpected content after putting (18, 18) into the HashMap.
+
+Before : [
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+    (13, 13),
+    (14, 14),
+    (15, 15),
+    (16, 16),
+    (17, 17),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+Expected : [
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+    (13, 13),
+    (14, 14),
+    (15, 15),
+    (16, 16),
+    (17, 17),
+    (18, 18),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+Actual : [
+    (0, 0),
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+    (13, 13),
+    (14, 14),
+    (15, 15),
+    (16, 16),
+    (17, 17),
+    (18, 18),
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+]
+
+[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.remove, line number: 135
+
+[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.remove, line number: 135
+
+[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.remove, line number: 135
+
+[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.remove, line number: 135
+
+[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
+Here is the stack trace to help identify the error in your code:
+	at ExternalChainingHashMap.remove, line number: 135
+
+[Test Failure: validSize] [-0.4] : Size variable could not be validated for the following method(s) due to early test failure(s): remove, put.
+
+[Test Failure: validData] [-0.4] : Returned data could not be validated for the following method(s) due to early test failure(s): put, remove.
+
+[Test Failure: equals] [-0.4] : equals() was not used correctly when testing the following method(s): put. Correct equals() usage could not be validated for the following method(s) due to early test failure(s): remove.
+
+
+Score: 4.0 / 10.0
+============================================================
+
+
+ */
