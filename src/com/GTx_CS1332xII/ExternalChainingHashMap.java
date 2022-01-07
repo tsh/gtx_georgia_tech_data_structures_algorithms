@@ -72,7 +72,11 @@ public class ExternalChainingHashMap<K, V> {
      * @throws java.lang.IllegalArgumentException If key or value is null.
      */
     public V put(K key, V value) {
-        double lf = (size + 1) / table.length;
+        if (key == null){
+            throw new IllegalArgumentException();
+        }
+
+        double lf = (double) (size + 1) / table.length;
         if (lf > MAX_LOAD_FACTOR){
             resizeBackingTable((2 * table.length) + 1);
         };
@@ -87,12 +91,12 @@ public class ExternalChainingHashMap<K, V> {
             size++;
         } else {
             ExternalChainingMapEntry<K, V> kv = table[compression];
-            ret = addToChain(kv, key, value);
+            ret = addToChain(kv, key, value, compression);
         }
         return ret;
     }
 
-    private V addToChain(ExternalChainingMapEntry<K,V> kv, K key, V value){
+    private V addToChain(ExternalChainingMapEntry<K,V> kv, K key, V value, int compression){
         ExternalChainingMapEntry<K,V> cur = kv;
         while (true) {
             if (cur == null){
@@ -106,6 +110,7 @@ public class ExternalChainingHashMap<K, V> {
         }
         ExternalChainingMapEntry<K,V> newKV = new ExternalChainingMapEntry<K,V> (key, value);
         newKV.setNext(kv);
+        table[compression] = newKV;
         size++;
         return value;
     }
@@ -198,7 +203,7 @@ public class ExternalChainingHashMap<K, V> {
                     ExternalChainingMapEntry<K, V> newChain = new ExternalChainingMapEntry<K, V>(newTableCurElem.getKey(), newTableCurElem.getValue());
                     table[cell] = newChain;
                 } else {
-                    addToChain(table[cell], newTableCurElem.getKey(), newTableCurElem.getValue());
+                    addToChain(table[cell], newTableCurElem.getKey(), newTableCurElem.getValue(), cell);
                 }
                 newTableCurElem = oldTableKV.getNext();
             }
@@ -232,308 +237,3 @@ public class ExternalChainingHashMap<K, V> {
         return size;
     }
 }
-
-/*
-[Executed at: Thu Jan 6 9:15:04 PST 2022]
-
-============================================================
-ExternalChainingHashMap.java successfully compiled.
-============================================================
-Tests Passed: 10 / 25
-
-[Test Failure: put] [-0.4] : IllegalArgumentException not thrown when attempting to add null key and value.
-
-[Test Failure: put] [-0.4] : This put test was inconclusive due to: java.lang.ArrayIndexOutOfBoundsException: Index -10 out of bounds for length 13
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.put, line number: 81
-
-[Test Failure: put] [-0.4] : This put test was inconclusive due to: org.junit.runners.model.TestTimedOutException: test timed out after 1000 milliseconds
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.addToChain, line number: 103
-	at ExternalChainingHashMap.put, line number: 88
-
-[Test Failure: put] [-0.4] : This put test was inconclusive due to: org.junit.runners.model.TestTimedOutException: test timed out after 1000 milliseconds
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.addToChain, line number: 103
-	at ExternalChainingHashMap.put, line number: 88
-
-[Test Failure: put] [-0.4] : Unexpected content after putting (8, 8) into the HashMap.
-
-Before : [
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-Expected : [
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-Actual : [
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    null,
-    null,
-    null,
-    null
-]
-
-[Test Failure: put] [-0.4] : Unexpected content after putting (1, 1) into the HashMap.
-
-Before : [
-    (13, 13),
-    (53, 53),
-    (15, 15),
-    (3, 3),
-    (17, 17),
-    (5, 5),
-    (19, 19),
-    null,
-    null,
-    null,
-    (218, 218),
-    null,
-    null
-]
-
-Expected : [
-    null,
-    (1, 1),
-    (218, 218),
-    (3, 3),
-    null,
-    (5, 5),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    (13, 13),
-    null,
-    (15, 15),
-    null,
-    (17, 17),
-    null,
-    (19, 19),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    (53, 53)
-]
-
-Actual : [
-    (13, 13),
-    (53, 53),
-    (15, 15),
-    (3, 3),
-    (17, 17),
-    (5, 5),
-    (19, 19),
-    null,
-    null,
-    null,
-    (218, 218),
-    null,
-    null
-]
-
-[Test Failure: put] [-0.4] : Unexpected content after putting (18, 18) into the HashMap.
-
-Before : [
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10),
-    (11, 11),
-    (12, 12),
-    (13, 13),
-    (14, 14),
-    (15, 15),
-    (16, 16),
-    (17, 17),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-Expected : [
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10),
-    (11, 11),
-    (12, 12),
-    (13, 13),
-    (14, 14),
-    (15, 15),
-    (16, 16),
-    (17, 17),
-    (18, 18),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-Actual : [
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10),
-    (11, 11),
-    (12, 12),
-    (13, 13),
-    (14, 14),
-    (15, 15),
-    (16, 16),
-    (17, 17),
-    (18, 18),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.remove, line number: 135
-
-[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.remove, line number: 135
-
-[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.remove, line number: 135
-
-[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.remove, line number: 135
-
-[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.util.NoSuchElementException
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.remove, line number: 135
-
-[Test Failure: validSize] [-0.4] : Size variable could not be validated for the following method(s) due to early test failure(s): remove, put.
-
-[Test Failure: validData] [-0.4] : Returned data could not be validated for the following method(s) due to early test failure(s): put, remove.
-
-[Test Failure: equals] [-0.4] : equals() was not used correctly when testing the following method(s): put. Correct equals() usage could not be validated for the following method(s) due to early test failure(s): remove.
-
-
-Score: 4.0 / 10.0
-============================================================
-
-
- */
