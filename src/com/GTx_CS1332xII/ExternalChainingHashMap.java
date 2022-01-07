@@ -98,15 +98,12 @@ public class ExternalChainingHashMap<K, V> {
 
     private V addToChain(ExternalChainingMapEntry<K,V> kv, K key, V value, int compression){
         ExternalChainingMapEntry<K,V> cur = kv;
-        while (true) {
-            if (cur == null){
-                break;
-            }
+        while (cur != null) {
             if (cur.getKey() == key){
                 cur.setValue(value);
                 return value;
             }
-            cur = kv.getNext();
+            cur = cur.getNext();
         }
         ExternalChainingMapEntry<K,V> newKV = new ExternalChainingMapEntry<K,V> (key, value);
         newKV.setNext(kv);
@@ -133,7 +130,7 @@ public class ExternalChainingHashMap<K, V> {
         if (cur == null) {
             throw new NoSuchElementException();
         }
-        V returnValue = findAndRemove(cur, key);
+        V returnValue = findAndRemove(cur, key, cellNumber);
         if (returnValue != null){
             size--;
             return returnValue;
@@ -141,8 +138,9 @@ public class ExternalChainingHashMap<K, V> {
         throw new NoSuchElementException();
     }
 
-    private V findAndRemove(ExternalChainingMapEntry<K,V> chain, K key){
+    private V findAndRemove(ExternalChainingMapEntry<K,V> chain, K key, int cellNumber){
         Tupple t = recurFindAndRemove(chain, key);
+        table[cellNumber] = t.chainElement;
         return t.returnValue;
     }
 
@@ -157,6 +155,7 @@ public class ExternalChainingHashMap<K, V> {
         } else {
             t = recurFindAndRemove(chain.getNext(), key);
             chain.setNext(t.chainElement);
+            t.chainElement = chain;
         }
         return t;
     }
@@ -244,264 +243,4 @@ public class ExternalChainingHashMap<K, V> {
 ============================================================
 ExternalChainingHashMap.java successfully compiled.
 ============================================================
-Tests Passed: 12 / 25
-[Test Failure: remove] [-0.4] : Unexpected content after attempting to remove element not in the HashMap.
-
-Before : [
-    null,
-    (1, 1) -> (14, 14),
-    null,
-    null,
-    (30, 30),
-    null,
-    (6, 6),
-    null,
-    (8, 8),
-    null,
-    null,
-    (11, 11),
-    null
-]
-
-Expected : [
-    null,
-    (1, 1) -> (14, 14),
-    null,
-    null,
-    (30, 30),
-    null,
-    (6, 6),
-    null,
-    (8, 8),
-    null,
-    null,
-    (11, 11),
-    null
-]
-
-Actual : [
-    null,
-    (1, 1),
-    null,
-    null,
-    (30, 30),
-    null,
-    (6, 6),
-    null,
-    (8, 8),
-    null,
-    null,
-    (11, 11),
-    null
-]
-
-[Test Failure: remove] [-0.4] : Unexpected content after removing key = 4 from the HashMap.
-
-Before : [
-    null,
-    null,
-    null,
-    null,
-    (4, 4),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-Expected : [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-Actual : [
-    null,
-    null,
-    null,
-    null,
-    (4, 4),
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-]
-
-[Test Failure: remove] [-0.4] : This remove test was inconclusive due to: java.lang.ArrayIndexOutOfBoundsException: Index -11 out of bounds for length 13
-Here is the stack trace to help identify the error in your code:
-	at ExternalChainingHashMap.remove, line number: 132
-
-[Test Failure: remove] [-0.4] : Unexpected content after removing key = 11 from the HashMap.
-
-Before : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    (6, 6),
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (24, 24) -> (37, 37),
-    null
-]
-
-Expected : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    (6, 6),
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (24, 24) -> (37, 37),
-    null
-]
-
-Actual : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    (6, 6),
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (24, 24) -> (37, 37),
-    null
-]
-
-[Test Failure: remove] [-0.4] : Unexpected content after removing key = 37 from the HashMap.
-
-Before : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    null,
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (24, 24) -> (37, 37) -> (50, 50),
-    null
-]
-
-Expected : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    null,
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (24, 24) -> (50, 50),
-    null
-]
-
-Actual : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    null,
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (50, 50),
-    null
-]
-
-[Test Failure: remove] [-0.4] : Unexpected content after removing key = 37 from the HashMap.
-
-Before : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    (6, 6),
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (24, 24) -> (37, 37),
-    null
-]
-
-Expected : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    (6, 6),
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11) -> (24, 24),
-    null
-]
-
-Actual : [
-    null,
-    (1, 1),
-    null,
-    null,
-    null,
-    null,
-    (6, 6),
-    (19, 19),
-    (8, 8),
-    null,
-    null,
-    (11, 11),
-    null
-]
-
-[Test Failure: validSize] [-0.4] : Size variable could not be validated for the following method(s) due to early test failure(s): remove, put.
-
-[Test Failure: validData] [-0.4] : Returned data could not be validated for the following method(s) due to early test failure(s): put, remove.
-
-[Test Failure: equals] [-0.4] : equals() was not used correctly when testing the following method(s): put. Correct equals() usage could not be validated for the following method(s) due to early test failure(s): remove.
  */
