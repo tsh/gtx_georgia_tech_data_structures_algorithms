@@ -2,6 +2,8 @@ package com.GTx_CS1332xII;
 
 import java.util.NoSuchElementException;
 
+import static java.lang.Math.abs;
+
 /**
  * Your implementation of a ExternalChainingHashMap.
  */
@@ -81,7 +83,7 @@ public class ExternalChainingHashMap<K, V> {
             resizeBackingTable((2 * table.length) + 1);
         };
         int hash = key.hashCode();
-        int compression = hash % table.length;
+        int compression = abs(hash % table.length);
 
         V ret;
         if (table[compression]  == null){
@@ -125,7 +127,7 @@ public class ExternalChainingHashMap<K, V> {
             throw new IllegalArgumentException();
         }
 
-        Integer cellNumber = key.hashCode() % table.length;
+        Integer cellNumber = abs(key.hashCode() % table.length);
         ExternalChainingMapEntry<K,V> cur = table[cellNumber];
         if (cur == null) {
             throw new NoSuchElementException();
@@ -236,11 +238,3 @@ public class ExternalChainingHashMap<K, V> {
         return size;
     }
 }
-
-/*
-[Executed at: Fri Jan 7 8:32:42 PST 2022]
-
-============================================================
-ExternalChainingHashMap.java successfully compiled.
-============================================================
- */
