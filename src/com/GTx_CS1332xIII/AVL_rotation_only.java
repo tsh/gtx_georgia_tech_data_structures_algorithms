@@ -5,7 +5,7 @@ import static java.lang.Math.max;
 /**
  * Implementation of the AVL tree rotations.
  */
-public class AVL<T extends Comparable<? super T>> {
+public class AVL_rotation_only<T extends Comparable<? super T>> {
 
     /**
      * DO NOT ADD ANY GLOBAL VARIABLES!
