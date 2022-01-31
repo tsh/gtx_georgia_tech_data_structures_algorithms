@@ -29,17 +29,18 @@ public class Sorting {
      * @param comparator The Comparator used to compare the data in arr.
      */
     public static <T> void bubbleSort(T[] arr, Comparator<T> comparator) {
-        boolean isSwapped = true;
-        int i = 0;
-        while (i < arr.length - 1 && isSwapped){
-            isSwapped = false;
-            for (int j = 0; j < arr.length - i - 1; i++){
-                if (comparator.compare(arr[j], arr[j+1]) > 0) {
-                    swap(arr, j, j+1);
-                    isSwapped = true;
+        int stopIndex = arr.length - 1;
+        while (stopIndex > 0) {
+            int i = 0;
+            int lastSwappedIndex = 0;
+            while (i < stopIndex) {
+                if (comparator.compare(arr[i], arr[i+1]) > 0){
+                    swap(arr, i, i+1);
+                    lastSwappedIndex = i;
                 }
+                i++;
             }
-            i++;
+            stopIndex = lastSwappedIndex;
         }
     }
 
@@ -101,10 +102,26 @@ public class Sorting {
         }
     }
 
-    public static <T> void swap(T[] arr, Integer index1, Integer index2){
+    private static <T> void swap(T[] arr, Integer index1, Integer index2){
         T tmp = arr[index1];
         arr[index1] = arr[index2];
         arr[index2] = tmp;
     }
-
 }
+
+/*
+Tests Passed: 18 / 21
+
+[Test Failure: bubbleSort] [-0.48] : Array is sorted, but number of comparisons was greater than expected.
+	Expected : <= 45
+	Actual : 49
+
+[Test Failure: bubbleSort] [-0.48] : Array is sorted, but number of comparisons was greater than expected.
+	Expected : <= 18
+	Actual : 35
+
+[Test Failure: compareTo] [-0.48] : Correct Comparator compareTo() usage could not be validated for the following method(s) due to early test failure(s): bubbleSort.
+
+
+Score: 8.57 / 10.0
+ */
