@@ -108,20 +108,3 @@ public class Sorting {
         arr[index2] = tmp;
     }
 }
-
-/*
-Tests Passed: 18 / 21
-
-[Test Failure: bubbleSort] [-0.48] : Array is sorted, but number of comparisons was greater than expected.
-	Expected : <= 45
-	Actual : 49
-
-[Test Failure: bubbleSort] [-0.48] : Array is sorted, but number of comparisons was greater than expected.
-	Expected : <= 18
-	Actual : 35
-
-[Test Failure: compareTo] [-0.48] : Correct Comparator compareTo() usage could not be validated for the following method(s) due to early test failure(s): bubbleSort.
-
-
-Score: 8.57 / 10.0
- */
