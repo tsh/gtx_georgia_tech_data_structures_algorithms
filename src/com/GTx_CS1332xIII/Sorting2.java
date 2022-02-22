@@ -110,7 +110,11 @@ public class Sorting2 {
 
         int maxDigitNumber = Math.abs(arr[0]);
         for (int j : arr) {
-            if (j > maxDigitNumber) {
+            if (j==Integer.MIN_VALUE){
+                // abs doesn't work on min value
+                maxDigitNumber = Integer.MAX_VALUE;
+            }
+            if (Math.abs(j) > maxDigitNumber) {
                 maxDigitNumber = Math.abs(j);
             }
         }
@@ -148,29 +152,3 @@ public class Sorting2 {
         return slice;
     }
 }
-
-
-/*
-
-[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 19 out of bounds for length 19
-
-[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 20 out of bounds for length 19
-
-[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 24 out of bounds for length 19
-
-[Test Failure: lsdRadixSort] [-0.59] : Unexpected content after sorting array.
-	Expected : [-2147483648, 0]
-	Actual : [0, -2147483648]
-
-[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 20 out of bounds for length 19
-
-[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index -7 out of bounds for length 19
-
-[Test Failure: lsdRadixSort] [-0.59] : Unexpected content after sorting array.
-	Expected : [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0]
-	Actual : [-1, -2, -3, -4, -5, -6, -7, -8, -9, 0]
-
-[Test Failure: lsdRadixSort] [-0.59] : Unexpected content after sorting array.
-	Expected : [-2147483648, -2147483648, -9]
-	Actual : [-2147483648, -9, -2147483648]
- */
