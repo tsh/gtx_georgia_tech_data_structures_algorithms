@@ -104,26 +104,28 @@ public class Sorting2 {
      * @param arr The array to be sorted.
      */
     public static void lsdRadixSort(int[] arr) {
-        // find max
-        int max = arr[0];
+        if (arr.length == 0) {
+            return;
+        }
+
+        int maxDigitNumber = Math.abs(arr[0]);
         for (int j : arr) {
-            if (j > max) {
-                max = j;
+            if (j > maxDigitNumber) {
+                maxDigitNumber = Math.abs(j);
             }
         }
 
-        int NUMBER_OF_BUCKETS = 19;
+        int NUMBER_OF_BUCKETS = 19; // 10->radix + 9->to shift negative numbers
         List<Queue<Integer>> buckets = new ArrayList<Queue<Integer>>(NUMBER_OF_BUCKETS);
         for (int i=0; i < NUMBER_OF_BUCKETS; i++){
             buckets.add(new LinkedList<Integer>());
         }
 
-        for (int divisor =1; max/divisor > 0; divisor *=10) {
+        for (int divisor =1; maxDigitNumber/divisor > 0; divisor *=10) {
 
             for (int el : arr) {
                 int digit = el / divisor;
-                // add 9 to shift negative numbers
-                buckets.get(digit % NUMBER_OF_BUCKETS + 9).add(el);
+                buckets.get((digit % 10) + 9).add(el);
             }
 
             // gather results
@@ -146,3 +148,29 @@ public class Sorting2 {
         return slice;
     }
 }
+
+
+/*
+
+[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 19 out of bounds for length 19
+
+[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 20 out of bounds for length 19
+
+[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 24 out of bounds for length 19
+
+[Test Failure: lsdRadixSort] [-0.59] : Unexpected content after sorting array.
+	Expected : [-2147483648, 0]
+	Actual : [0, -2147483648]
+
+[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index 20 out of bounds for length 19
+
+[Test Failure: lsdRadixSort] [-0.59] : This lsdRadixSort test was inconclusive due to: java.lang.IndexOutOfBoundsException: Index -7 out of bounds for length 19
+
+[Test Failure: lsdRadixSort] [-0.59] : Unexpected content after sorting array.
+	Expected : [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0]
+	Actual : [-1, -2, -3, -4, -5, -6, -7, -8, -9, 0]
+
+[Test Failure: lsdRadixSort] [-0.59] : Unexpected content after sorting array.
+	Expected : [-2147483648, -2147483648, -9]
+	Actual : [-2147483648, -9, -2147483648]
+ */
