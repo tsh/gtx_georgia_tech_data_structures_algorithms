@@ -1,3 +1,5 @@
+package GTx_CS1332xIV;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -25,7 +27,29 @@ public class PatternMatching {
      * @return           List containing the starting index for each match found.
      */
     public static List<Integer> boyerMoore(CharSequence pattern, CharSequence text, CharacterComparator comparator) {
-        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        Map<Character, Integer> lastMap = buildLastTable(pattern);
+        List<Integer> results = new ArrayList<Integer>();
+        int i = 0;
+        while (i<=text.length() - pattern.length()){
+            int j = pattern.length() - 1;
+            while (j>=0 && comparator.compare(pattern.charAt(j), text.charAt(i+j)) == 0) {
+                j--;
+            }
+            // found
+            if (j == -1){
+                results.add(i);
+                i += 1;
+            } else {
+                char c = text.charAt(i+j);
+                int shift = lastMap.getOrDefault(c, -1);
+                if (shift < j){
+                    i = i+j-shift;
+                } else{
+                  i ++;
+                }
+            }
+        }
+        return results;
     }
 
     /**
@@ -54,6 +78,10 @@ public class PatternMatching {
      *         to their last occurrence in the pattern.
      */
     public static Map<Character, Integer> buildLastTable(CharSequence pattern) {
-        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+        for (int i=0; i<pattern.length(); i++){
+            map.put(pattern.charAt(i), i);
+        }
+        return map;
     }
 }
